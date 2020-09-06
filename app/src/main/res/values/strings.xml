@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">FaceMakerApp_ohara21</string>
+    <string name="random_face">Random Face</string>
+    <string name="facial_feature">RadioButton</string>
+    <string name="blue_text">Blue</string>
+    <string name="green_text">Green</string>
+    <string name="red_text">Red</string>
+    <string name="hair">Hair</string>
+    <string name="eyes">Eyes</string>
+    <string name="skin">Skin</string>
+</resources>
