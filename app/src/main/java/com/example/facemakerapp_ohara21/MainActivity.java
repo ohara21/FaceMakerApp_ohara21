@@ -1,12 +1,14 @@
 package com.example.facemakerapp_ohara21;
 /**
  * @description: Main Class
+ * Model, View, Controller (MVC) with other classes
  * @author: Nick Ohara
- * @version: 9/6/20 Part A implementation
+ * @version: 10/6/20 Part B implementation
  */
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.SurfaceView;
 import android.view.View;
@@ -20,88 +22,42 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String[] hairstyles = {"hairstyle1", "hairstyle2", "hairstyle3"};
+    //instance variables for various widgets used in interface
+    private String[] hairstyles = {"Bowl Cut", "Mohawk", "Clown"};
     private RadioGroup radioFaceGroup;
-    private RadioButton radioFaceButton;
+    private Button randomFaceButton;
     private SeekBar redSeek;
     private SeekBar greenSeek;
     private SeekBar blueSeek;
     private TextView redValueText;
     private TextView greenValueText;
     private TextView blueValueText;
+    private ArrayAdapter<String> hairstyleAdapter;
+    private Spinner hairstyleSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
+        Face faceView = findViewById(R.id.surfaceView);
 
         /**
          * External Citation
-         * Date: 6 September 2020
+         * Date: 10 September 2020
          * Problem: Wanted to learn how to display the progress of seek bar
-         * Resource: https://www.youtube.com/watch?v=acRAFIn3ZJs&ab_channel=ProgrammingWizardsTV
-         * Solution: followed the tutorial and used code
+         * Resource: Professor Nuxoll
+         * Solution: used code to make a Listener class
          */
+        //finds the ID for each text view and seek bar
         redSeek = findViewById(R.id.red_seekBar);
-        greenSeek = findViewById(R.id.green_seekBar);
-        blueSeek = findViewById(R.id.blue_seekBar);
         redValueText = findViewById(R.id.red_val);
+        greenSeek = findViewById(R.id.green_seekBar);
         greenValueText = findViewById(R.id.green_val);
+        blueSeek = findViewById(R.id.blue_seekBar);
         blueValueText = findViewById(R.id.blue_val);
-
-        redSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-            @Override
-            public void onProgressChanged(SeekBar redSeek, int progress, boolean fromUser) {
-                redValueText.setText(String.valueOf(progress));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar redSeek) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar redSeek) {
-
-            }
-        });
-
-        greenSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-            @Override
-            public void onProgressChanged(SeekBar greenSeek, int progress, boolean fromUser) {
-                greenValueText.setText(String.valueOf(progress));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar greenSeek) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar greenSeek) {
-
-            }
-        });
-
-        blueSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-            @Override
-            public void onProgressChanged(SeekBar redSeek, int progress, boolean fromUser) {
-                blueValueText.setText(String.valueOf(progress));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar blueSeek) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar blueSeek) {
-
-            }
-        });
+        radioFaceGroup = findViewById(R.id.facial_feature);
+        randomFaceButton = findViewById(R.id.random_face_button);
 
         /**
          * External Citation
@@ -110,9 +66,21 @@ public class MainActivity extends AppCompatActivity {
          * Resource: Professor Nuxoll, CS301 Spinner Example
          * Solution: Used Professor Nuxoll's code as a template to populate the hairstyle spinner
          */
-        ArrayAdapter<String> hairstyleAdapter = new ArrayAdapter<String>(this,
+        hairstyleAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, hairstyles);
-        Spinner hairstyle_spinner = findViewById(R.id.hairstyle_spinner);
-        hairstyle_spinner.setAdapter(hairstyleAdapter);
+        hairstyleSpinner = findViewById(R.id.hairstyle_spinner);
+        hairstyleSpinner.setAdapter(hairstyleAdapter);
+
+        //assigns a listener to the surfaceView, spinner, and each seekBar and text view
+        Listener eventListener = new Listener(faceView, hairstyleSpinner,
+                redSeek, greenSeek, blueSeek, redValueText, blueValueText, greenValueText);
+
+        //assigns listeners
+        redSeek.setOnSeekBarChangeListener(eventListener);
+        blueSeek.setOnSeekBarChangeListener(eventListener);
+        greenSeek.setOnSeekBarChangeListener(eventListener);
+        radioFaceGroup.setOnCheckedChangeListener(eventListener);
+        randomFaceButton.setOnClickListener(eventListener);
+        hairstyleSpinner.setOnItemSelectedListener(eventListener);
     }
 }
